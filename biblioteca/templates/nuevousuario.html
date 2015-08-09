@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block content %}
+<form id="formulario" method="post" action=""><input type="hidden" name="csrfmiddlewaretoken" value="ORhDYFlE8H7IsNpZdOY4fulaVHYw2GQv">
+    <div class="card-panel red darken-3 center-align">
+        <div class="card-panel red">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input placeholder="Nombre de usuario" maxlength="30" name="username" id="id_username" type="text" value="">
+                    <span class="helptext">Obligatorio. Longitud máxima de 30 caracteres. Sólo puede estar formado por letras, números, guiones y puntos</span>
+                </div>       
+                <div class="input-field col s6">
+                    <input placeholder="Email" name="email" id="id_email" type="text" value="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input placeholder="Contraseña" name="password1" id="id_password1" type="password" class="validate" value="">
+                </div>
+                <div class="input-field col s6">
+                    <input placeholder="Confirmación de contraseña" name="password2" id="id_password2" type="password" value="">
+                    <span class="helptext">Para verificación, introduzca la misma contraseña que introdujo arriba.</span>
+                </div>
+            </div>
+            <div class="card-panel red lighten-1 waves-effect waves-orange ">
+                <a class="btn-flat white-text" id="register"><i class="fa fa-paper-plane right"></i>Registrar</a>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('input:password[name=password2]').focusout(function(){
+        if($('input:password[name=password2]').val()!=""){
+            console.log("no"+$('input:password[name=password2]').val());
+            if($('input:password[name=password1]').val()!=$('input:password[name=password2]').val()){
+                if ($('input:password[name=password2]').hasClass('valid')) {
+                    $('input:password[name=password2]').removeClass('valid');
+                }
+                $('input:password[name=password2]').addClass('invalid');
+            }else{
+                if ($('input:password[name=password2]').hasClass('invalid')) {
+                    $('input:password[name=password2]').removeClass('invalid');
+                }
+                $('input:password[name=password2]').addClass('valid');
+            }
+        }else{
+            if ($('input:password[name=password2]').hasClass('valid')) {
+                $('input:password[name=password2]').removeClass('valid');
+            }
+            if ($('input:password[name=password2]').hasClass('invalid')) {
+                $('input:password[name=password2]').removeClass('invalid');
+            }
+        }
+    });
+    $('input:text[name=username]').focusout(function(){
+        console.log("no"+$('input:text[name=username]').val());
+        if($('input:text[name=username]').val()!=""){
+            if(/^[a-zA-Z0-9-_.]*$/.test($('input:text[name=username]').val())!= true){
+                if ($('input:text[name=username]').hasClass('valid')) {
+                    $('input:text[name=username]').removeClass('valid');
+                }
+                $('input:text[name=username]').addClass('invalid');
+            }else{
+                if ($('input:text[name=username]').hasClass('invalid')) {
+                    $('input:text[name=username]').removeClass('invalid');
+                }
+                $('input:text[name=username]').addClass('valid');
+            }
+        }else{
+            if ($('input:text[name=username]').hasClass('valid')) {
+                $('input:text[name=username]').removeClass('valid');
+            }
+            if ($('input:text[name=username]').hasClass('invalid')) {
+                $('input:text[name=username]').removeClass('invalid');
+            }
+        }
+    });
+
+    $('input:text[name=email]').focusout(function(){
+        console.log("no"+$('input:text[name=email]').val());
+        if($('input:text[name=email]').val()!=""){
+            if($('input:text[name=email]').val().indexOf("@")>=0){
+                if ($('input:text[name=email]').hasClass('invalid')) {
+                    $('input:text[name=email]').removeClass('invalid');
+                }
+                $('input:text[name=email]').addClass('valid');
+            }else{
+                if ($('input:text[name=email]').hasClass('valid')) {
+                    $('input:text[name=email]').removeClass('valid');
+                }
+                $('input:text[name=email]').addClass('invalid');
+            }
+        }else{
+            if ($('input:text[name=email]').hasClass('valid')) {
+                $('input:text[name=email]').removeClass('valid');
+            }
+            if ($('input:text[name=email]').hasClass('invalid')) {
+                $('input:text[name=email]').removeClass('invalid');
+            }
+        }
+    });
+
+    $('#register').click(function() {
+        if($('input:password[name=password1]').hasClass('invalid') || $('input:password[name=password2]').hasClass('invalid') || $('input:text[name=email]').hasClass('invalid') || $('input:password[name=password1]').val()=="" || $('input:password[name=password2]').val()=="" || $('input:text[name=email]').val()==""){
+            Materialize.toast('Verifique los campos', 2000)
+        }else{
+
+
+            var data={
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                username:$('input:text[name=username]').val(),
+                password:$('input:password[name=password1]').val(),
+                email:$('input:text[name=email]').val(),
+            }
+            var a=[$('input:text[name=username]'),
+                  $('input:password[name=password1]'),
+                  $('input:text[name=email]').val(""),
+                  $('input:password[name=password2]')];
+            for (i = 0; i < 4; i++) { 
+                a[i].val("");
+                if (a[i].hasClass('valid')) {
+                    a[i].removeClass('valid');
+                }
+                if (a[i].hasClass('invalid')) {
+                    a[i].removeClass('invalid');
+                }
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'biblioteca:nuevo_usuario' %}",
+                data: data,
+                success: function(result){
+                    $("#res").html(result);
+                    Materialize.toast('Registrado con éxito', 2000);
+                },
+                error: function(err){
+                    console.log("ERRRORRRR");
+                    console.log(err.responseText);
+
+
+                },
+            });
+        }
+    });
+</script>
+{% endblock %}

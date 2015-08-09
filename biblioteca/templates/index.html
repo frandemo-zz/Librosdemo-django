@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block titulo %}
+<title>Inicio</title>
+{% endblock %}
+{% block content %}
+<div id="containLib" class="minI row">
+    <div class='card-panel red darken-2 center-align col s10 offset-s1'>
+        <h4>
+            Mejor valorados
+            {% for j in '12345' %}
+            <span class="fa fa-star"></span>        
+            {% endfor %}
+        </h4>
+
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    var elementoAnterior=1;
+    $(document).ready(function(){
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal-trigger').leanModal();    
+    });
+    $('.button-collapse').sideNav();
+
+    $(function() {
+        {% for libro in libros %}
+        var meter= "<div class='vistPrev prof' onclick='cambiarPortada({{forloop.counter}})'><img src='{{ MEDIA_URL }}/{{libro.img}}' width='100%' height='100%' img></div>"; 
+         $("#containLib").append(meter);
+         {% endfor %}
+         meter="<div id='elModal' class='modal modal-fixed-footer red ligthen-1' style='display: none; opacity: 1; top: 10%;'><div class='modal-content'><div style='width:20%; position:fixed; margin-left:72%'><img id='modalI' src='' width='100%' height='30%' img></div><div class='vistPrev' style='width:75%'><h4 id='modalH'>Modal Header</h4><p id='modalP'></p></div></div><div class='modal-footer red  darken-2'><a href='#!' class='modal-action modal-close waves-effect waves-red btn-flat ' style='color:white'>Cerrar</a><a id='modalD' href='#!' class='modal-action modal-close waves-effect waves-green btn-flat ' style='color:white'>Descargar</a><a id='modalMI' href='#!' class='modal-action modal-close waves-effect waves-light btn-flat ' style='color:white'>Mas Info</a></div></div>";
+          $("#containLib").append(meter);
+         })
+         function cambiarPortada(tocado){
+             $('#elModal').openModal();
+             {% for libro in libros %}
+             if({{forloop.counter}}==tocado){
+                 $("#modalI").attr('src', "{{ MEDIA_URL }}/{{libro.img}}");
+                 $("#modalH").html("{{libro.titulo}}");
+                 $("#modalP").html("{{libro.descripcion}}");
+                 $("#modalD").attr('href', "{{ MEDIA_URL }}/{{libro.archivo}}");
+                 $("#modalMI").attr('href', "{% url 'biblioteca:librete' libro.id %}");
+                 $('#modalD').click(function(){
+                     Materialize.toast('Descarga iniciada', 2000);
+                 });
+             }
+              {% endfor %}
+              }
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block titulo %}
+<title>Biblioteca</title>
+{% endblock %}
+{% block content %}
+<div class="row" style="margin-top:20px">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab col s3" onclick="cambiarLetra('a')"><a href="#librosPorLetra">A</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('b')"><a href="#librosPorLetra">B</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('c')"><a href="#librosPorLetra">C</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('d')"><a href="#librosPorLetra">D</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('e')"><a href="#librosPorLetra">E</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('f')"><a href="#librosPorLetra">F</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('g')"><a href="#librosPorLetra">G</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('h')"><a href="#librosPorLetra">H</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('i')"><a href="#librosPorLetra">I</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('j')"><a href="#librosPorLetra">J</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('k')"><a href="#librosPorLetra">K</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('l')"><a href="#librosPorLetra">L</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('m')"><a href="#librosPorLetra">M</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('n')"><a href="#librosPorLetra">N</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('o')"><a href="#librosPorLetra">O</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('p')"><a href="#librosPorLetra">P</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('q')"><a href="#librosPorLetra">Q</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('r')"><a href="#librosPorLetra">R</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('s')"><a href="#librosPorLetra">S</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('t')"><a href="#librosPorLetra">T</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('u')"><a href="#librosPorLetra">U</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('v')"><a href="#librosPorLetra">V</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('w')"><a href="#librosPorLetra">W</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('x')"><a href="#librosPorLetra">X</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('y')"><a href="#librosPorLetra">Y</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('z')"><a href="#librosPorLetra">Z</a></li>
+            <li class="tab col s3" onclick="cambiarLetra('#')"><a href="#librosPorLetra">#</a></li>
+        </ul>
+    </div>
+    <div id="librosPorLetra" class="col s12 min"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('.button-collapse').sideNav();
+    $(document).ready(function(){
+        $('ul.tabs').tabs();
+        $('ul.tabs').tabs('select_tab', 'librosPorLetra');
+    });
+    function cambiarLetra(letra){
+        $("#librosPorLetra").empty();
+        if (letra=="#"){
+            {% for libro in libros %}
+            var meter= "<div class='vistPrev prof' onclick='cambiarPortada({{forloop.counter}})'><img src='{{MEDIA_URL}}/{{libro.img}}' width='100%' height='100%' img></div>"; 
+             $("#librosPorLetra").append(meter);
+             {% endfor %}
+             }else{
+                 {% for libro in libros %}
+                 if ("{{libro.titulo}}".charAt(0)==letra || "{{libro.titulo}}".charAt(0)==letra.toUpperCase()){
+                     var meter= "<div class='vistPrev prof' onclick='cambiarPortada({{forloop.counter}})'><img src='{{MEDIA_URL}}/{{libro.img}}' width='100%' height='100%' img></div>";
+                     $("#librosPorLetra").append(meter);
+                     noTiene = false;
+
+                 }
+                  {% endfor %}
+                  }
+                  meter="<div id='elModal' class='modal modal-fixed-footer red ligthen-1' style='display: none; opacity: 1; top: 10%;'><div class='modal-content'><div style='width:20%; position:fixed; margin-left:72%'><img id='modalI' src='' width='100%' height='30%' img></div><div class='vistPrev' style='width:75%'><h4 id='modalH'>Modal Header</h4><p id='modalP'></p></div></div><div class='modal-footer red  darken-2'><a href='#!' class='modal-action modal-close waves-effect waves-red btn-flat ' style='color:white'>Cerrar</a><a id='modalD' href='#!' class='modal-action modal-close waves-effect waves-green btn-flat ' style='color:white'>Descargar</a><a id='modalMI' href='#!' class='modal-action modal-close waves-effect waves-light btn-flat ' style='color:white'>Mas Info</a></div></div>";
+                  $("#librosPorLetra").append(meter);
+                 }
+                 function cambiarPortada(tocado){
+                     $('#elModal').openModal();
+                     {% for libro in libros %}
+                     if({{forloop.counter}}==tocado){
+                         $("#modalI").attr('src', "{{ MEDIA_URL }}/{{libro.img}}");
+                         $("#modalH").html("{{libro.titulo}}");
+                         $("#modalP").html("{{libro.descripcion}}");
+                         $("#modalD").attr('href', "{{ MEDIA_URL }}/{{libro.archivo}}");
+                         $("#modalMI").attr('href', "{% url 'biblioteca:librete' libro.id %}");
+                         $('#modalD').click(function(){
+                             Materialize.toast('Descarga iniciada', 2000);
+                         });
+                     }
+                      {% endfor %}
+                      }
+</script>
+{% endblock %}

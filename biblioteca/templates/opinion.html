@@ -1,0 +1,16 @@
+{% for i in valor %}
+<div class="card-panel red">
+    <h4>{{i.nombre}}</h4>
+    <div> 
+        {% for j in '12345' %}
+        {% if j|add:"0" <= i.valoracion %}
+        <span class="fa fa-star" data-rating="{{j}}"></span>        
+        {% else %}
+        <span class="fa fa-star-o" data-rating="{{j}}"></span>        
+        {% endif %}
+        {% endfor %}
+    </div>
+    <p style="font-size:10px">{{i.fecha}} - {{i.valoracion}}</p>
+    <p>{{i.pub}}</p>
+</div>
+{% endfor %}

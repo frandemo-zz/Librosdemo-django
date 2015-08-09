@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block titulo %}
+<title>{{libroI}}</title>
+{% endblock %}
+{% block content %}
+<div class="row" style="margin-bottom:0px">
+    <div class="container col s8 center-align"> 
+        <ul>
+            <li class="card-panel red darken-3">
+                <h2>
+                    {{libroI.titulo}}
+                </h2>
+            </li>
+            <li class="card-panel red darken-3">
+                <p>
+                    {{libroI.autor}}
+                </p>
+                <p>
+                    {{libroI.fecha}}
+                </p>
+                {% csrf_token %} 
+                <div class="tooltipped" data-position="top" data-delay="50" data-tooltip="Puntuación {{avgEs}}"> 
+                    {% for j in '12345' %}
+                        {% if j|add:"0" <= avgEs %}
+                            <span class="fa fa-star fa-2x" data-rating="{{j}}"></span>        
+                        {% else %}
+                            {% if j|add:"0" < avgEs %}
+                               <span class="fa fa-star fa-2x" data-rating="{{j}}"></span>
+                            {% else %}
+                                <span class="fa fa-star-o fa-2x" data-rating="{{j}}"></span>        
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </li>
+            <li class="card-panel red darken-3">
+                <p>
+                    {{libroI.descripcion}}
+                </p>
+            </li>
+        </ul>
+    </div>
+    <div class="col s4" style="padding-top:1%">
+        <img class="materialboxed" src='{{ MEDIA_URL }}//{{libroI.img}}' width='100%' height='100%'/>
+        <div class="center-align card-panel red darken-3 waves-effect waves-light btn-flat" onclick="location.href='{{ MEDIA_URL }}//{{libroI.archivo}}';"  style="width:100%">
+            <a id="descargar" style='color:white'>Descargar</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="container col s12">
+        <div class="center-align card-panel red darken-3" id="res">
+            <div class="card-panel red">
+                <div class="input-field">
+                    <input class="center-align" placeholder="Deja en blanco para Anónimo" maxlength="40" name="nombre" type="text" style="width:50%" value="">
+                </div>
+                <div class="star_rating"> 
+                    {% for j in '12345' %}
+                        <span class="fa fa-star-o fa-2x" data-rating="{{j}}"></span>        
+                    {% endfor %}
+                    <input type="hidden" name="whatever" class="rating-value" value="0">
+                </div>
+                <div class="input-field">
+                    <textarea name="publicacion" maxlength="200" class="materialize-textarea center-align" placeholder="Danos tu opinión " value=""></textarea>
+                </div>
+            <a class="waves-effect waves-orange btn-flat white-text" id="enviar-res"><i class="fa fa-paper-plane right"></i>Enviar</a>
+            </div>
+            {% include "opinion.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('.button-collapse').sideNav();
+    $(document).ready(function(){
+        $('.materialboxed').materialbox();
+        //star_rating.siblings('input.rating-value0').val(4);
+        //return SetRatingStar();
+        console.log({{avgEs}});
+    });
+    var star_rating = $('.star_rating .fa');
+
+    var SetRatingStar = function() {
+        return star_rating.each(function() {
+            if (parseInt(star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+                return $(this).removeClass('fa-star-o').addClass('fa-star');
+            } else {
+                return $(this).removeClass('fa-star').addClass('fa-star-o');
+            }
+        });
+    };
+
+    star_rating.on('click', function() {
+        star_rating.siblings('input.rating-value').val($(this).data('rating'));
+        return SetRatingStar();
+    });
+
+    $('#descargar').click(function(){
+        Materialize.toast('Descarga iniciada', 2000);
+    });
+    
+    $('#enviar-res').click(function() {
+        if(star_rating.siblings('input.rating-value').val()==0){
+             Materialize.toast('No ingresó su valoración', 2000)
+        }else{
+            if($('input:text[name=nombre]').val()==""){
+                $('input:text[name=nombre]').val("Anónimo");
+            }
+
+            var data={
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                id:'{{libroI.id}}',
+                valoracion:star_rating.siblings('input.rating-value').val(),
+                nombre:$('input:text[name=nombre]').val(),
+                pub:$('textarea[name=publicacion]').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'biblioteca:valorar' %}",
+                data: data,
+                success: function(result){
+                    $("#res").html(result);
+                    Materialize.toast('Valoración enviada con éxito', 2000)
+                },
+                error: function(err){
+                    console.log("ERRRORRRR");
+                    console.log(err.responseText);
+
+
+                },
+            });
+        }
+    });
+
+
+
+    //SetRatingStar();
+
+</script>
+{% endblock %}

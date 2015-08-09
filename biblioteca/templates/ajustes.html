@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block titulo %}
+<title>Ajuste</title>
+{% endblock %}
+{% block content %}
+<div class="minA">
+    <ul class="collapsible popout" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header red darken-3"><i class="fa fa-user"></i>Cuenta</div>
+            <div class="collapsible-body "><p>Aca ajustes esta en construccion, notificaciones tiene un email sender</p></div>
+        </li>
+        <li>
+            <div class="collapsible-header red darken-3"><i class="fa fa-file"></i>Opciones de Archivo</div>
+            <div class="collapsible-body ">
+                <form action="#">
+                    <p>
+                        <input name="group1" type="radio" id="test1"/>
+                        <label for="test1">Epub</label>
+                    </p>
+                    <p>
+                        <input name="group1" type="radio" id="test2"/>
+                        <label for="test2">Pdf</label>
+                    </p>
+                </form>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header red darken-3"><i class="fa fa-bell"></i>Notificaciones</div>
+            <div class="collapsible-body ">
+                <form action="{% url 'biblioteca:enviar_mail' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    <div class="card-panel red darken-3 row">
+                        <h4 class="container center-align">Esto es solo si te gusta que te manden mails con lo que vos pongas adentro(es totalmente temporal)</h4>
+                        <br>
+                        <div class="input-field col s6">
+                            <input placeholder="Asunto" maxlength="100" name="asunto" type="text" value="">
+                        </div>
+                        <div class="input-field col s6">
+                            <input placeholder="Email" maxlength="100" name="mail" type="text" value="">
+                        </div>
+                        <div class="input-field col s12">
+                            <textarea name="mensaje" maxlength="200" class="materialize-textarea" placeholder="Mensaje" value=""></textarea>
+                        </div>
+                        <button class="card-panel red lighten-1 waves-effect waves-orange btn col s2 offset-s10" type="submit">
+                            Enviar mail
+                        </button>
+                    </div>
+                </form>                
+            </div>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('.button-collapse').sideNav();
+</script>
+{% endblock %}
