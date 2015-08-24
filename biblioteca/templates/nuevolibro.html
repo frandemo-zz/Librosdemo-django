@@ -31,7 +31,7 @@
                 <input placeholder="Fecha de publicación libro(AAAA-MM-DD)" maxlength="100" name="fecha" id="pub" type="text" value="">
             </div>
             <div class="input-field col s12">
-                <textarea name="descripcion" maxlength="200" class="materialize-textarea" placeholder="Descripción del libro" value=""></textarea>
+                <textarea name="descripcion" class="materialize-textarea" placeholder="Descripción del libro" value=""></textarea>
             </div>
             <button class="card-panel red lighten-1 waves-effect waves-orange btn col s2 offset-s10" id="crear" type="submit">
                 Crear libro
@@ -39,41 +39,4 @@
         </div>
     </form>
 </div>
-    {% endblock %}
-    {% block scripts %}
-    <script>
-        $('.button-collapse').sideNav();
-        /*$('.datepicker').pickadate({
-        selectMonths:true,
-        selectYears: 100
-    });
-    $('#crear').click(function() {
-        console.log($('input:file[name=archivo]').val());
-        var data={
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            titulo:$('input:text[name=titulo]').val(),
-            autor:$('input:text[name=autor]').val(),
-            fecha:$('#pub').val(),
-            descripcion:$('textarea[name=descripcion]').val(),
-            archivo:$('input:file[name=archivo]').val(),
-            img:$('input:file[name=img]').val(),
-        }
-        console.log(data);
-
-        $.ajax({
-            type: "POST",
-            url: "{% url 'biblioteca:crear_libro' %}",
-            data: data,
-            success: function(result){
-
-            },
-            error: function(err){
-                console.log("ERRRORRRR");
-                console.log(err.responseText);
-
-
-            },
-        });
-    });*/
-    </script>
     {% endblock %}

@@ -26,28 +26,53 @@
                     <ul class="right hide-on-med-and-down">
                         <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Inicio" href="{% url 'biblioteca:inicio' %}"><i class="fa fa-home fa-fw"></i></a></li>
                         <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Biblioteca por orden alfabético" href="{% url 'biblioteca:biblioteca' %}"><i class="fa fa-book fa-fw"></i></a></li>
-                        <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Ajustes" href="{% url 'biblioteca:ajustes' %}"><i class="fa fa-cog fa-fw"></i></a></li>
-                        <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Agregar libro" href="{% url 'biblioteca:nuevolibro' %}"><i class="fa fa-plus fa-fw"></i></a></li>
+                        <!--li><a class="tooltipped  modal-trigger" data-position="bottom" data-delay="50" data-tooltip="Ajustes" href="{% if user.is_authenticated %}{% url 'biblioteca:ajustes' %}{% else %}#ingres-modal{% endif %}"><i class="fa fa-cog fa-fw"></i></a></li-->
+                        <li><a class="tooltipped modal-trigger" data-position="bottom" data-delay="50" data-tooltip="Agregar libro" href="{% if user.is_authenticated %}{% url 'biblioteca:nuevolibro' %}{% else %}#ingres-modal{% endif %}"><i class="fa fa-plus fa-fw"></i></a></li>
+                        <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Salir" href="{% if user.is_authenticated %}{% url 'biblioteca:salir_usuario' %}{% else %}#!{% endif %}"><i class="fa fa-sign-out fa-fw"></i></a></li>
                     </ul>
 
                     <ul class="side-nav" style="left: -250px;" id="nav-mobile">
                         <li><a href="{% url 'biblioteca:inicio' %}"><i class="fa fa-home fa-fw left"></i>Inicio</a></li>
                         <li><a href="{% url 'biblioteca:biblioteca' %}"><i class="fa fa-book fa-fw left"></i>Biblioteca</a></li>
-                        <li><a href="{% url 'biblioteca:ajustes' %}"><i class="fa fa-cog fa-fw left"></i>Ajustes</a></li>
-                        <li><a href="{% url 'biblioteca:nuevolibro' %}"><i class="fa fa-plus fa-fw left"></i>Agregar Libro</a></li>
+                        <!--li><a class="modal-trigger" href="{% if user.is_authenticated %}{% url 'biblioteca:ajustes' %}{% else %}#ingres-modal{% endif %}"><i class="fa fa-cog fa-fw left"></i>Ajustes</a></li-->
+                        <li><a class="modal-trigger" href="{% if user.is_authenticated %}{% url 'biblioteca:nuevolibro' %}{% else %}#ingres-modal{% endif %}}"><i class="fa fa-plus fa-fw left"></i>Agregar Libro</a></li>
+                        <li><a class="modal-trigger" href="{% if user.is_authenticated %}{% url 'biblioteca:salir_usuario' %}{% else %}#!{% endif %}}"><i class="fa fa-sign-out fa-fw left"></i>Salir</a></li>
                     </ul>
                     <a class="waves-effect circle button-collapse" style="margin:0 0 0 -50px;" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a></div>
             </nav>
         </div>
         {% block content %}
         {% endblock %}
+        <div id="ingres-modal" class="modal modal-fixed-footer red ligthen-1">
+            <div class="modal-content">
+                {% csrf_token %}
+                <div class="container">
+                    <h4 class="center-align">Se requiere ingresar</h4>
+                    <div class="input-field">
+                        <input placeholder="Nombre de usuario" maxlength="30" name="username" id="id_username" type="text" value="">
+                    </div>
+                    <div class="input-field">
+                        <input placeholder="Contraseña" name="password" id="id_password1" type="password" class="validate" value="">
+                    </div>
+                    <div class="right-align">
+                        <a href="{% url 'biblioteca:nuevo_usuario' %}" style="color:white">¿No tenés usuario? Tocá para crear uno.</a><br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer red  darken-2">
+                <a href='#!' class='modal-action waves-effect waves-red btn-flat ' id="log" style='color:white'>
+                    <i class="fa fa-paper-plane right"></i>Log In
+                </a>
+                <a href='#!' class='modal-action modal-close waves-effect waves-red btn-flat ' style='color:white'>Cerrar</a>
+            </div>
+        </div>
 
         <footer class="page-footer site-footer red darken-4">
             <div class="container">
                 <div class="row" style="margin-bottom:0px">
                     <div class="col l6 s12">
                         <h5 class="white-text"><i class="fa fa-envelope fa-fw"></i> Contacto</h5>
-                        <p class="grey-text text-lighten-4">Cualquier error que encuentre no dude en contactarme.</p>
+                        <p class="grey-text text-lighten-4">Cualquier error que encuentre no dude en contactarme.<i class="fa fa-paper-plane" ></i></p>
                     </div>
                     <div class="col l4 offset-l2 s12">
                         <h5 class="white-text">Links</h5>
@@ -75,6 +100,38 @@
             </div>
         </footer>
     </body>
+    <script>
+        $('.button-collapse').sideNav();
+        $(document).ready(function(){
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('.modal-trigger').leanModal();
+        });
+        $('#log').click(function() {
+            console.log("funco");
+            var data={
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                username:$('input:text[name=username]').val(),
+                password:$('input:password[name=password]').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'biblioteca:ingreso_usuario' %}",
+                data: data,
+                statusCode: {
+                    203: function(){
+                        Materialize.toast('Usuario o contraseña incorrectos', 2000);
+                    },
+                    202:function(result){
+                        Materialize.toast('Logged', 2000);
+                        $('#ingres-modal').closeModal();
+                        window.location.href="{{request.path}}";
+                    },
+                },
+            });
+        });
+
+    </script>
     {% block scripts %}
     {% endblock %}
 </html>

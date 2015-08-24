@@ -1,32 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
-<form id="formulario" method="post" action=""><input type="hidden" name="csrfmiddlewaretoken" value="ORhDYFlE8H7IsNpZdOY4fulaVHYw2GQv">
-    <div class="card-panel red darken-3 center-align">
-        <div class="card-panel red">
-            <div class="row">
-                <div class="input-field col s6">
-                    <input placeholder="Nombre de usuario" maxlength="30" name="username" id="id_username" type="text" value="">
-                    <span class="helptext">Obligatorio. Longitud máxima de 30 caracteres. Sólo puede estar formado por letras, números, guiones y puntos</span>
-                </div>       
-                <div class="input-field col s6">
-                    <input placeholder="Email" name="email" id="id_email" type="text" value="">
-                </div>
+
+<div class="card-panel red darken-3 center-align">
+    <div class="card-panel red">
+        <div class="row">
+            <div class="input-field col s6">
+                <input placeholder="Nombre de usuario" maxlength="30" name="username" id="id_username" type="text" value="">
+                <span class="helptext">Obligatorio. Longitud máxima de 30 caracteres. Sólo puede estar formado por letras, números, guiones y puntos</span>
             </div>
-            <div class="row">
-                <div class="input-field col s6">
-                    <input placeholder="Contraseña" name="password1" id="id_password1" type="password" class="validate" value="">
-                </div>
-                <div class="input-field col s6">
-                    <input placeholder="Confirmación de contraseña" name="password2" id="id_password2" type="password" value="">
-                    <span class="helptext">Para verificación, introduzca la misma contraseña que introdujo arriba.</span>
-                </div>
-            </div>
-            <div class="card-panel red lighten-1 waves-effect waves-orange ">
-                <a class="btn-flat white-text" id="register"><i class="fa fa-paper-plane right"></i>Registrar</a>
+            <div class="input-field col s6">
+                <input placeholder="Email" name="email" id="id_email" type="text" value="">
             </div>
         </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <input placeholder="Contraseña" name="password1" id="id_password1" type="password" class="validate" value="">
+            </div>
+            <div class="input-field col s6">
+                <input placeholder="Confirmación de contraseña" name="password2" id="id_password2" type="password" value="">
+                <span class="helptext">Para verificación, introduzca la misma contraseña que introdujo arriba.</span>
+            </div>
+        </div>
+        <div class="card-panel red lighten-1 waves-effect waves-orange ">
+            <a class="btn-flat white-text" id="register"><i class="fa fa-paper-plane right"></i>Registrar</a>
+        </div>
     </div>
-</form>
+</div>
+
 {% endblock %}
 {% block scripts %}
 <script>
@@ -114,9 +114,9 @@
                 email:$('input:text[name=email]').val(),
             }
             var a=[$('input:text[name=username]'),
-                  $('input:password[name=password1]'),
-                  $('input:text[name=email]').val(""),
-                  $('input:password[name=password2]')];
+                   $('input:password[name=password1]'),
+                   $('input:text[name=email]'),
+                   $('input:password[name=password2]')];
             for (i = 0; i < 4; i++) { 
                 a[i].val("");
                 if (a[i].hasClass('valid')) {

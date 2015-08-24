@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card-panel red darken-3 center-align">
+    <div class="card-panel red">
+        <form action="{% url 'biblioteca:ingreso_usuario' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container">
+                <div class="input-field">
+                    <input placeholder="Nombre de usuario" maxlength="30" name="username" id="id_username" type="text" value="">
+                </div>
+                <div class="input-field">
+                    <input placeholder="Contraseña" name="password" id="id_password1" type="password" class="validate" value="">
+                </div>
+                <div class="right-align">
+                    <a href="{% url 'biblioteca:nuevo_usuario' %}" style="color:white">¿No tenés usuario? Tocá para crear uno.</a><br>
+                    <button class="card-panel red lighten-1 waves-effect waves-orange btn-large" id="log-in" type="submit">
+                        <i class="fa fa-paper-plane right"></i>Log In
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

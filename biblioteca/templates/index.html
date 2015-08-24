@@ -18,11 +18,6 @@
 {% block scripts %}
 <script>
     var elementoAnterior=1;
-    $(document).ready(function(){
-        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-        $('.modal-trigger').leanModal();    
-    });
-    $('.button-collapse').sideNav();
 
     $(function() {
         {% for libro in libros %}

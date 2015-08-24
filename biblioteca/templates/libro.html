@@ -73,7 +73,6 @@
 {% endblock %}
 {% block scripts %}
 <script>
-    $('.button-collapse').sideNav();
     $(document).ready(function(){
         $('.materialboxed').materialbox();
         //star_rating.siblings('input.rating-value0').val(4);
@@ -102,6 +101,7 @@
     });
     
     $('#enviar-res').click(function() {
+        {% if user.is_authenticated %}
         if(star_rating.siblings('input.rating-value').val()==0){
              Materialize.toast('No ingresó su valoración', 2000)
         }else{
@@ -128,11 +128,14 @@
                 error: function(err){
                     console.log("ERRRORRRR");
                     console.log(err.responseText);
-
+                    Materialize.toast('Ingrese antes de dar su opinion', 2000);
 
                 },
             });
         }
+        {% else %}
+        $('#ingres-modal').openModal();
+        {% endif %}
     });
 
 
